@@ -1,0 +1,246 @@
+<!DOCTYPE HTML>
+<HTML>
+<head>
+<!-- Link to style sheet-->
+<link rel="stylesheet" type="text/css" href="style.css">
+
+<!-- Link to bootstraps-->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+
+<!-- code which forces blank default style on all browsers-->
+
+<!-- Link to JQuery-->
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+ 
+
+</head>
+<body>
+<div id="mainBox">
+
+<div id="quizContent">
+    <p>
+    Click "Start" to begin the code quiz. 
+</p>
+    <!-- Start button-->
+<button id="start" type="button" class="btn btn-info">START</button>
+
+
+<!--what-->
+<div id ="quizQuestions">
+    <div id="choices">
+
+        <div class="choice" id="A" onclick="checkAnswer('A')"></div>
+
+        <div class="choice" id="B" onclick="checkAnswer('B')"></div>
+
+        <div class="choice" id="C" onclick="checkAnswer('C')"></div>
+
+    </div>
+
+
+
+<!-- end of quizQuestions div-->
+</div>
+
+<!-- end of quizContent div-->
+</div>
+
+<!-- end of mainBox div-->
+</div>
+
+
+
+<!-- JAVASCRIPT-->
+<script>
+// Sets background color to blue
+document.body.style.css
+
+// Quiz Element selectors
+const start = document.getElementById("start");
+const quiz = document.getElementById("quiz");
+const question = document.getElementById("question");
+const qImg = document.getElementById("qImg");
+const choiceA = document.getElementById("A");
+const choiceB = document.getElementById("B");
+const choiceC = document.getElementById("C");
+const counter = document.getElementById("counter");
+const timeGauge = document.getElementById("timeGauge");
+const progress = document.getElementById("progress");
+const scoreDiv = document.getElementById("scoreContainer");
+
+
+// Quiz Questions 
+let questions = [
+
+    {
+        question : "How do you pronounce JIF",
+        imgSrc : "img/html.png",
+        choiceA : "Correct Answer",
+        choiceB : "Wrong",
+        choiceC : "Wrong",
+        correct : "A"
+    },{
+        question : "What does CSS stand for?",
+        imgSrc : "img/css.png",
+        choiceA : "Wrong",
+        choiceB : "Correct",
+        choiceC : "Wrong",
+        correct : "B"
+    },{
+        question : "What does JS stand for?",
+        imgSrc : "img/js.png",
+        choiceA : "Wrong",
+        choiceB : "Wrong",
+        choiceC : "Correct",
+        correct : "C"
+    }
+];
+
+// this keeps it going until all the questions have been asked
+const lastQuestion = questions.length - 1
+let runningQuestion = 0;
+let count = 0;
+const questionTime = 10; // 10s
+const gaugeWidth = 150; // 150px
+const gaugeUnit = gaugeWidth / questionTime;
+let TIMER;
+let score = 0;
+
+
+// this picks questions
+function renderQuestion(){
+    let q = questions[runningQuestion];
+    
+    document.getElementById("quizQuestions").innerHTML = "<p>"+ q.question +"</p>";
+    choiceA.innerHTML = q.choiceA;
+    choiceB.innerHTML = q.choiceB;
+    choiceC.innerHTML = q.choiceC;
+}
+
+// Starts quiz when start button clicked
+start.addEventListener("click",startQuiz);
+
+function startQuiz(){
+    start.style.display = "none";
+    renderQuestion();
+    quiz.style.display = "block";
+    renderProgress();
+    renderCounter();
+    TIMER = setInterval(renderCounter,1000); // 1000ms = 1s
+}
+
+// render progress
+function renderProgress(){
+    for(let qIndex = 0; qIndex <= lastQuestion; qIndex++){
+        progress.innerHTML += "<div class='prog' id="+ qIndex +"></div>";
+    }
+}
+
+
+// counter render
+
+function renderCounter(){
+    if(count <= questionTime){
+        counter.innerHTML = count;
+        timeGauge.style.width = count * gaugeUnit + "px";
+        count++
+    }else{
+        count = 0;
+        // change progress color to red
+        answerIsWrong();
+        if(runningQuestion < lastQuestion){
+            runningQuestion++;
+            renderQuestion();
+        }else{
+            // end the quiz and show the score
+            clearInterval(TIMER);
+            scoreRender();
+        }
+    }
+}
+
+// checkAnwer
+
+function checkAnswer(answer){
+    if( answer == questions[runningQuestion].correct){
+        // answer is correct
+        score++;
+        // change progress color to green
+        answerIsCorrect();
+    }else{
+        // answer is wrong
+        // change progress color to red
+        answerIsWrong();
+    }
+    count = 0;
+    if(runningQuestion < lastQuestion){
+        runningQuestion++;
+        renderQuestion();
+    }else{
+        // end the quiz and show the score
+        clearInterval(TIMER);
+        scoreRender();
+    }
+}
+
+// answer is correct
+function answerIsCorrect(){
+    document.getElementById(runningQuestion).style.backgroundColor = "#0f0";
+}
+
+// answer is Wrong
+function answerIsWrong(){
+    document.getElementById(runningQuestion).style.backgroundColor = "#f00";
+}
+
+// score render
+function scoreRender(){
+    scoreDiv.style.display = "block";
+    
+    // calculate the amount of question percent answered by the user
+    const scorePerCent = Math.round(100 * score/questions.length);
+    
+    // choose the image based on the scorePerCent
+    let img = (scorePerCent >= 80) ? "https://github.com/CodeExplainedRepo/Multiple-Choice-Quiz-JavaScript/raw/master/img/5.png" :
+              (scorePerCent >= 60) ? "https://github.com/CodeExplainedRepo/Multiple-Choice-Quiz-JavaScript/raw/master/img/4.png" :
+              (scorePerCent >= 40) ? "https://github.com/CodeExplainedRepo/Multiple-Choice-Quiz-JavaScript/raw/master/img/3.png" :
+              (scorePerCent >= 20) ? "https://github.com/CodeExplainedRepo/Multiple-Choice-Quiz-JavaScript/raw/master/img/2.png" :
+              "https://github.com/CodeExplainedRepo/Multiple-Choice-Quiz-JavaScript/raw/master/img/1.png";
+    
+    scoreDiv.innerHTML = "<img src="+ img +">";
+    scoreDiv.innerHTML += "<p>"+ scorePerCent +"%</p>";
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
+
+</body>
+
+<footer> *Made by Rebecca Oliver </footer>
+
+
+
+
+
+</HTML>

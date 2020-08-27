@@ -1,0 +1,14 @@
+#mainBox{
+    /* sets gradient background */ 
+    background: #AC40CE;
+    background: -moz-linear-gradient(-45deg, #AC40CE 0%, #1C6EA4 50%, #1EC5C2 100%);
+    background: -webkit-linear-gradient(-45deg, #AC40CE 0%, #1C6EA4 50%, #1EC5C2 100%);
+    background: linear-gradient(135deg, #AC40CE 0%, #1C6EA4 50%, #1EC5C2 100%);
+    
+    /* sets size of box */
+    width: 800px;
+    border: 15px solid whitesmoke;
+    padding: 50px;
+    margin: 20px;
+    display: inline-block;
+}
